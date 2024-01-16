@@ -1,10 +1,7 @@
-import bcrypt from "bcrypt";
 import { v2 as cloudinary } from "cloudinary";
 import asyncHandler from "express-async-handler";
 
-import jwt from "jsonwebtoken";
 import { Product } from "../models/productModel.js";
-import { User } from "../models/userModel.js";
 
 export const createProduct = asyncHandler(async (req, res) => {
   try {
