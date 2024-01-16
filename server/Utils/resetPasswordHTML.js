@@ -49,7 +49,7 @@ export default (resetPasswordToken) => {
         <div class="container">
             <h2>Password Reset Request</h2>
             <p>We have received a password reset request. Please use the below link to reset your password.</p>
-            <a href="http://localhost:5173/reset-password/${resetPasswordToken}" target="_blank">Reset Password</a>
+            <a href="${process.env.CLIENT_URL}/reset-password/${resetPasswordToken}" target="_blank">Reset Password</a>
             <p>This reset password link will be only valid for 10 minutes.</p>
         </div>
     </body>

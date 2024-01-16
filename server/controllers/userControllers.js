@@ -90,7 +90,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
 
   //send the token back to user email
   const subject = "Reset Password";
-  const text = `We have received a password reset request. Please use the below link to reset your password.\n\n http://localhost:5000/api/reset-password/${resetPasswordToken} \n\nThis reset password link will be only valid for 10 minutes.\n\n`;
+  const text = `We have received a password reset request. Please use the below link to reset your password.\n\n ${process.env.CLIENT_URL}/reset-password/${resetPasswordToken} \n\nThis reset password link will be only valid for 10 minutes.\n\n`;
   const html = resetPasswordHTML(resetPasswordToken);
 
   try {
