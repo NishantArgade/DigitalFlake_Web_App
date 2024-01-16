@@ -10,6 +10,10 @@ import userRoutes from "./routes/userRoutes.js";
 
 const app = express();
 
+app.get("/", (req, res) => {
+  res.send("Hello There");
+});
+
 app.use(cors()); //for accepting incoming requests from other domains
 app.use(express.json()); // for read json data from req body
 app.use(cookieParser()); // for read json data from req body
