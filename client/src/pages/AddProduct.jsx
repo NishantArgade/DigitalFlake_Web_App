@@ -8,12 +8,22 @@ import {
   TextValidator,
   ValidatorForm,
 } from "react-material-ui-form-validator";
-import { useMutation } from "react-query";
+import { QueryClient, useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 
 const AddProduct = () => {
   const naviate = useNavigate();
   const uploadRef = useRef(null);
+  const client = new QueryClient();
+
+  const [inputs, setInputs] = useState({
+    category: "",
+    productName: "",
+    packSize: "",
+    mrp: "",
+    status: "",
+    image: "",
+  });
 
   const mutation = useMutation({
     mutationKey: "addProduct",
@@ -46,16 +56,17 @@ const AddProduct = () => {
         image: "",
       });
       uploadRef.current.value = "";
+      client.invalidateQueries("allProducts");
     },
   });
 
-  const [inputs, setInputs] = useState({
-    category: "",
-    productName: "",
-    packSize: "",
-    mrp: "",
-    status: "",
-    image: "",
+  let { data: cat } = useQuery({
+    queryKey: ["allCategories"],
+    initialData: [],
+    queryFn: async () => {
+      const response = await axios.get("/api/all-categories");
+      return response?.data?.allCategories || []; // Make sure to return the data from the axios call
+    },
   });
 
   const handleAddProduct = (e) => {
@@ -72,23 +83,6 @@ const AddProduct = () => {
   const handleImageUpload = (e) => {
     setInputs((state) => ({ ...state, image: e.target.files[0] }));
   };
-
-  const [cat, setCat] = useState([]);
-
-  const fetchAllCategories = async () => {
-    try {
-      const { data } = await axios.get("/api/all-categories");
-
-      const ans = data?.allCategories || [];
-      setCat(ans);
-    } catch (error) {
-      return [];
-    }
-  };
-
-  useEffect(() => {
-    fetchAllCategories();
-  }, []);
 
   return (
     <div className="text-gray-600 flex flex-col gap-2 my-2 h-screen md:h-full">
@@ -182,8 +176,8 @@ const AddProduct = () => {
               style={{
                 minWidth: "14.1rem",
               }}
-              name="categoryStatus"
-              value={inputs.categoryStatus}
+              name="status"
+              value={inputs.status}
               onChange={handleChangedInputs}
               validators={["required"]}
               errorMessages={["this field is required"]}

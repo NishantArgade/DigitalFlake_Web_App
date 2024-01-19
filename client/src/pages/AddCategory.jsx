@@ -9,6 +9,7 @@ import {
   ValidatorForm,
 } from "react-material-ui-form-validator";
 import { useNavigate } from "react-router-dom";
+import { client } from "../main";
 
 const AddCategory = () => {
   const [inputs, setInputs] = useState({
@@ -27,9 +28,6 @@ const AddCategory = () => {
   const handleCategoryAdd = async (e) => {
     e.preventDefault();
     try {
-      // if(categoryName &&
-      //   categoryDescription
-      //   categoryStatus)
       const data = axios.post("/api/create-category", inputs);
       toast.promise(data, {
         loading: "Loading...",
@@ -41,6 +39,7 @@ const AddCategory = () => {
         categoryDescription: "",
         categoryStatus: "",
       });
+      client.invalidateQueries("allCategories");
     } catch (error) {
       toast.error(error.response.data.error);
     }

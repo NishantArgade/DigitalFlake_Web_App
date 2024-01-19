@@ -1,95 +1,117 @@
 import { v2 as cloudinary } from "cloudinary";
-import asyncHandler from "express-async-handler";
 
 import { Product } from "../models/productModel.js";
+import { asyncErrorHandler } from "../Utils/common.js";
+import { CustomError } from "../Utils/CustomError.js";
 
-export const createProduct = asyncHandler(async (req, res) => {
+export const createProduct = asyncErrorHandler(async (req, res, next) => {
+  const { category, productName, packSize, mrp, status } = req.body;
+
+  // Upload the file to Cloudinary
+  cloudinary.uploader
+    .upload_stream({ resource_type: "auto" }, async (error, result) => {
+      if (error) {
+        console.error("Error uploading to Cloudinary:", error);
+        return next(new CustomError("Error while uploading file!", 500));
+      }
+
+      const imageUrl = result.secure_url;
+
+      const productData = {
+        productName: productName,
+        productPackSize: Number(packSize),
+        productCategory: category,
+        productMRP: Number(mrp),
+        productStatus: status,
+        productImage: imageUrl,
+      };
+
+      const newProduct = await Product.create(productData);
+
+      res.status(201).json({
+        status: "success",
+        message: `Product created successfully`,
+      });
+    })
+    .end(req.file.buffer);
+});
+const uploadToCloudinary = async (
+  buffer,
+  productName,
+  packSize,
+  category,
+  mrp,
+  status,
+  id
+) => {
   try {
-    const { category, productName, packSize, mrp, status } = req.body;
+    const result = await new Promise((resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream({ resource_type: "auto" }, (error, result) => {
+          if (error) {
+            console.error("Error uploading to Cloudinary:", error);
+            reject(new CustomError("Error uploading file", 500));
+          } else {
+            resolve(result);
+          }
+        })
+        .end(buffer);
+    });
 
-    // Upload the file to Cloudinary
-    cloudinary.uploader
-      .upload_stream({ resource_type: "auto" }, async (error, result) => {
-        if (error) {
-          console.error("Error uploading to Cloudinary:", error);
-          return res.status(500).json({ error: "Error uploading file" });
-        }
+    const imageUrl = result.secure_url;
+    console.log("🚀 ~ uploadToCloudinary ~ imageUrl:", imageUrl);
 
-        // Handle the Cloudinary response (result) as needed
-        const imageUrl = result.secure_url;
-        // const publicId = result.public_id;
+    const productData = {
+      productName: productName,
+      productPackSize: Number(packSize),
+      productCategory: category,
+      productMRP: Number(mrp),
+      productStatus: status,
+      productImage: imageUrl,
+    };
+    console.log("🚀 ~ uploadToCloudinary ~ productData:", productData);
 
-        const productData = {
-          productName: productName,
-          productPackSize: Number(packSize),
-          productCategory: category,
-          productMRP: Number(mrp),
-          productStatus: status,
-          productImage: imageUrl,
-        };
-
-        const newProduct = await Product.create(productData);
-
-        res.status(201).json({
-          msg: `Product created successfully`,
-          newProduct,
-        });
-      })
-      .end(req.file.buffer); // Pass the file buffer to the Cloudinary upload stream
+    const updatedProduct = await Product.findByIdAndUpdate(id, productData);
+    console.log("🚀 ~ uploadToCloudinary ~ updatedProduct:", updatedProduct);
   } catch (error) {
-    console.error("Error handling file upload:", error);
-    res.status(500).json({ error: "Internal server error" });
+    // Handle errors here
+    console.error("Error in uploadToCloudinary:", error);
   }
+};
+
+export const updateProduct = asyncErrorHandler(async (req, res, next) => {
+  const { id, category, productName, packSize, mrp, status } = req.body;
+
+  console.log("--> ", req.body);
+  // Upload the file to Cloudinary
+
+  await uploadToCloudinary(
+    req.file.buffer,
+    productName,
+    packSize,
+    category,
+    mrp,
+    status,
+    id
+  );
+
+  res.status(200).json({
+    status: "success",
+    message: `Product updated successfully`,
+  });
 });
 
-export const updateProduct = asyncHandler(async (req, res) => {
-  try {
-    const { id, category, productName, packSize, mrp, status } = req.body;
-    // Upload the file to Cloudinary
-    cloudinary.uploader
-      .upload_stream({ resource_type: "auto" }, async (error, result) => {
-        if (error) {
-          console.error("Error uploading to Cloudinary:", error);
-          return res.status(500).json({ error: "Error uploading file" });
-        }
-
-        // Handle the Cloudinary response (result) as needed
-        const imageUrl = result.secure_url;
-        // const publicId = result.public_id;
-
-        const productData = {
-          productName: productName,
-          productPackSize: Number(packSize),
-          productCategory: category,
-          productMRP: Number(mrp),
-          productStatus: status,
-          productImage: imageUrl,
-        };
-
-        const updatedProduct = await Product.findByIdAndUpdate(id, productData);
-
-        res.status(201).json({
-          msg: `Product updated successfully`,
-          updatedProduct,
-        });
-      })
-      .end(req.file.buffer); // Pass the file buffer to the Cloudinary upload stream
-  } catch (error) {
-    console.error("Error handling file upload:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-export const getAllProducts = asyncHandler(async (req, res) => {
+export const getAllProducts = asyncErrorHandler(async (req, res, next) => {
   const allProducts = await Product.find();
-  res.status(200).json({ allProducts });
+  res.status(200).json({ status: "success", allProducts });
 });
-export const removeProduct = asyncHandler(async (req, res) => {
+
+export const removeProduct = asyncErrorHandler(async (req, res, next) => {
   const product = await Product.findByIdAndDelete(req.params.productId);
 
-  if (!product) return res.status(400).json({ error: "Product not found" });
+  if (!product) return next(new CustomError("Product not found!", 404));
 
   res
     .status(200)
-    .json({ status: "success", msg: "Product deleted successfuly" });
+    .json({ status: "success", message: "Product deleted successfully" });
 });

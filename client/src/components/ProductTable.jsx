@@ -19,7 +19,7 @@ const ProductTable = ({ data, columns }) => {
   const [selectedProduct, setSelectedProduct] = React.useState({});
   const [{ pageIndex, pageSize }, setPagination] = React.useState({
     pageIndex: 0,
-    pageSize: 9,
+    pageSize: 6,
   });
 
   const pagination = React.useMemo(

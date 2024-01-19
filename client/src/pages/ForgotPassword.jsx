@@ -4,19 +4,20 @@ import toast from "react-hot-toast";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import { Link } from "react-router-dom";
 
-const RestorePassword = () => {
+const ForgotPassword = () => {
   const [email, setEmail] = useState("");
 
-  const handleRestorePassword = async (e) => {
+  const handleForgotPassword = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("/api/forgot-password", { email });
-      toast.success("Reset password link has been sent to your mail address");
+      const { data } = await axios.post("/api/forgot-password", { email });
       setEmail("");
+      toast.success(data.message);
     } catch (error) {
-      toast.error("Something went wrong. Please try again later.");
+      toast.error(error.response.data.message);
     }
   };
+
   return (
     <div className="container mx-auto  h-screen w-full flex justify-center items-center">
       <div
@@ -31,7 +32,7 @@ const RestorePassword = () => {
 
         <ValidatorForm
           // ref="form"
-          onSubmit={handleRestorePassword}
+          onSubmit={handleForgotPassword}
           className="mt-8 w-full "
         >
           <p className="text-sm text-gray-500 pb-1">Email Address</p>
@@ -61,4 +62,4 @@ const RestorePassword = () => {
   );
 };
 
-export default RestorePassword;
+export default ForgotPassword;

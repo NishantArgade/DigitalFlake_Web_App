@@ -11,7 +11,7 @@ const Navbar = () => {
     match?.pathname === "/login" ||
     match?.pathname === "/register" ||
     match?.pathname === "/register" ||
-    match?.pathname === "/restore-password" ||
+    match?.pathname === "/forgot-password" ||
     match?.pathname === `/reset-password/${resetPasswordToken}`
   )
     return null;

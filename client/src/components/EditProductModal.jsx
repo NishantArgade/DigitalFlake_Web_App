@@ -13,6 +13,7 @@ import axios from "axios";
 import * as React from "react";
 import toast from "react-hot-toast";
 import { useMutation } from "react-query";
+import { client } from "../main";
 const style = {
   position: "absolute",
   top: "50%",
@@ -29,15 +30,21 @@ const style = {
 export default function EditProductModal({ open, setOpen, product }) {
   const handleClose = () => setOpen(false);
   const uploadRef = React.useRef(null);
+  // const client = new QueryClient();
 
-  const [inputs, setInputs] = React.useState({
-    category: product?.productCategory,
-    productName: product?.productName,
-    packSize: product?.productPackSize,
-    mrp: product?.productMRP,
-    status: product?.productStatus,
-    image: product?.productImage,
-  });
+  const [inputs, setInputs] = React.useState({});
+
+  React.useEffect(() => {
+    setInputs({
+      category: product?.productCategory,
+      productName: product?.productName,
+      packSize: product?.productPackSize,
+      mrp: product?.productMRP,
+      status: product?.productStatus,
+      image: product?.productImage,
+    });
+  }, [product]);
+  console.log("🚀 ~ EditProductModal ~ product:", product);
 
   const handleChangedInputs = (e) => {
     const name = e.target.name;
@@ -49,21 +56,18 @@ export default function EditProductModal({ open, setOpen, product }) {
   };
 
   const mutation = useMutation({
-    mutationKey: "editProduct",
+    mutationKey: ["editProduct"],
     mutationFn: async () => {
       const formData = new FormData();
-      formData.append("file", inputs.image || product?.productImage);
-      formData.append("category", inputs.category || product?.productCategory);
-      formData.append(
-        "productName",
-        inputs.productName || product?.productName
-      );
-      formData.append("packSize", inputs.packSize || product?.productPackSize);
-      formData.append("mrp", inputs.mrp || product?.productMRP);
-      formData.append("status", inputs.status || product?.productStatus);
+      formData.append("file", inputs.image);
+      formData.append("category", inputs.category);
+      formData.append("productName", inputs.productName);
+      formData.append("packSize", inputs.packSize);
+      formData.append("mrp", inputs.mrp);
+      formData.append("status", inputs.status);
       formData.append("id", product?._id);
 
-      const data = await axios.post("/api/update-product", formData);
+      const data = axios.post("/api/update-product", formData);
       toast.promise(data, {
         loading: "Loading...",
         success: "Product Updated",
@@ -82,12 +86,13 @@ export default function EditProductModal({ open, setOpen, product }) {
         image: "",
       });
       uploadRef.current.value = "";
-      window.location.reload();
+      client.invalidateQueries("allProducts");
+      handleCancel();
     },
   });
+
   const handleEditProduct = async (e) => {
     e.preventDefault();
-
 
     if (!inputs.image) {
       return toast.error("Select an Image");
@@ -107,6 +112,7 @@ export default function EditProductModal({ open, setOpen, product }) {
       return [];
     }
   };
+
   React.useEffect(() => {
     fetchAllCategories();
     if (uploadRef.current) {
@@ -119,6 +125,7 @@ export default function EditProductModal({ open, setOpen, product }) {
     uploadRef.current.value = "";
     handleClose();
   };
+
   return (
     <div>
       <Modal
@@ -153,9 +160,8 @@ export default function EditProductModal({ open, setOpen, product }) {
                     id="demo-simple-select"
                     label="Status"
                     name="category"
-                    value={inputs?.category}
+                    value={inputs?.category || product?.productCategory}
                     onChange={handleChangedInputs}
-                    defaultValue={inputs?.category}
                   >
                     {cat.map(({ categoryName }) => (
                       <MenuItem key={categoryName} value={categoryName}>
@@ -171,7 +177,6 @@ export default function EditProductModal({ open, setOpen, product }) {
                   className="text-sm"
                   type="number"
                   label="MRP"
-                  defaultValue={product?.productMRP}
                   name="mrp"
                   value={inputs?.mrp}
                   onChange={handleChangedInputs}
@@ -182,7 +187,6 @@ export default function EditProductModal({ open, setOpen, product }) {
                   size="small"
                   type="text "
                   label="Product Name"
-                  defaultValue={product?.productName}
                   name="productName"
                   value={inputs?.productName}
                   onChange={handleChangedInputs}
@@ -206,7 +210,6 @@ export default function EditProductModal({ open, setOpen, product }) {
                   size="small"
                   type="number"
                   label="Pack Size"
-                  defaultValue={product?.productPackSize}
                   name="packSize"
                   value={inputs?.packSize}
                   onChange={handleChangedInputs}
@@ -223,7 +226,7 @@ export default function EditProductModal({ open, setOpen, product }) {
                     id="demo-simple-select"
                     label="Status"
                     name="status"
-                    value={inputs?.status}
+                    value={inputs?.status || product?.productStatus}
                     onChange={handleChangedInputs}
                     // onChange={handleChange}
                   >

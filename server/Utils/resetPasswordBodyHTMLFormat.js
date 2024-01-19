@@ -14,7 +14,7 @@ export default (resetPasswordToken) => {
             }
     
             .container {
-                max-width: 600px;
+                max-width: 600px;  
                 margin: 50px auto;
                 background-color: #fff;
                 padding: 20px;

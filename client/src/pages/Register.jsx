@@ -45,8 +45,7 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      await axios.post("/api/register", inputs);
-
+      const { data } = await axios.post("/api/register", inputs);
       setInputs({
         name: "",
         email: "",
@@ -54,9 +53,9 @@ const Register = () => {
         confirmPassword: "",
       });
       navigate("/login");
-      toast.success("Registration Successful");
+      toast.success(data.message);
     } catch (error) {
-      toast.error(error.response.data.error);
+      toast.error(error.response.data.message);
     }
   };
 

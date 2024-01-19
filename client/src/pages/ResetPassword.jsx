@@ -25,18 +25,22 @@ const ResetPassword = () => {
   const handleResetPassword = async (e) => {
     e.preventDefault();
     try {
-      await axios.patch(`/api/reset-password/${params.resetPasswordToken}`, {
-        password,
-        confirmPassword,
-      });
+      const { data } = await axios.patch(
+        `/api/reset-password/${params.resetPasswordToken}`,
+        {
+          password,
+          confirmPassword,
+        }
+      );
       setPassword("");
       setConfirmPassword("");
       navigate("/login");
-      toast.success("Password reset successfully");
+      toast.success(data.message);
     } catch (error) {
-      toast.error(error.response.data.error);
+      toast.error(error.response.data.message);
     }
   };
+
   useEffect(() => {
     ValidatorForm.addValidationRule("isPasswordMatch", (value) => {
       if (value !== password) {

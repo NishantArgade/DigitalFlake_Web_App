@@ -3,8 +3,10 @@ import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Fade from "@mui/material/Fade";
 import Modal from "@mui/material/Modal";
+import axios from "axios";
+import Cookies from "js-cookie";
 import toast from "react-hot-toast";
-import { useAuth } from "../auth/authProvider";
+import { useNavigate } from "react-router-dom";
 const style = {
   position: "absolute",
   top: "50%",
@@ -20,12 +22,15 @@ const style = {
 
 export default function LogoutModal({ open, setOpen }) {
   const handleClose = () => setOpen(false);
-  const { setToken } = useAuth();
-
-  const handleLogout = () => {
-    // setOpen(false)
-    setToken();
-    toast.success("Logged out successfully");
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      await axios.post("/api/logout");
+      toast.success("Logged out successfully");
+      navigate("/login", { replace: true });
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div>

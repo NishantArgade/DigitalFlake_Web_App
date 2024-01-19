@@ -5,6 +5,7 @@ import Fade from "@mui/material/Fade";
 import Modal from "@mui/material/Modal";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { client } from "../main";
 const style = {
   position: "absolute",
   top: "50%",
@@ -24,8 +25,8 @@ export default function DeleteProductModal({ open, setOpen, productId }) {
   const handleDeleteProduct = async () => {
     try {
       await axios.delete(`/api/remove-product/${productId}`);
+      client.invalidateQueries("allProducts");
       handleClose();
-      window.location.reload();
       toast.success("Product deleted successfully");
     } catch (error) {
       toast.error(error.response.data.error);
