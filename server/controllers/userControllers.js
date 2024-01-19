@@ -25,6 +25,7 @@ export const login = asyncErrorHandler(async (req, res, next) => {
   res.cookie("access_token", accessToken, {
     maxAge: process.env.ACCESS_TOKEN_EXPIRE * 60 * 1000,
     httpOnly: false,
+    secure: true,
   });
 
   // generate and save refresh token
@@ -32,6 +33,7 @@ export const login = asyncErrorHandler(async (req, res, next) => {
   res.cookie("refresh_token", refreshToken, {
     maxAge: process.env.REFRESH_TOKEN_EXPIRE * 60 * 1000,
     httpOnly: true,
+    secure: true,
   });
 
   res.status(200).json({
