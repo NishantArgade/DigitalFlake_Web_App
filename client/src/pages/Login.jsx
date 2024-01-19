@@ -35,7 +35,7 @@ const Login = () => {
         email: "",
         password: "",
       });
-      navigate("/", { replace: true });
+      // navigate("/", { replace: true });
       toast.success(data.message);
     } catch (error) {
       return toast.error(error.response.data.message);
