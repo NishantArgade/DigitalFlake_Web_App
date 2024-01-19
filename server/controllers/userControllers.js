@@ -23,7 +23,7 @@ export const login = asyncErrorHandler(async (req, res, next) => {
   // generate and save access token
   const accessToken = generateAccessToken(user);
   res.cookie("access_token", accessToken, {
-    maxAge: process.env.ACCESS_TOKEN_EXPIRE * 30 * 1000,
+    maxAge: process.env.ACCESS_TOKEN_EXPIRE * 60 * 1000,
     httpOnly: false,
   });
 
