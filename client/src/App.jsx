@@ -4,24 +4,24 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
-import Layout from "./components/Layout";
 import AddCategory from "./pages/AddCategory";
 import AddProduct from "./pages/AddProduct";
 import Category from "./pages/Category";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Products from "./pages/Products";
+import ProtectedRoute from "./pages/ProtectedRoute";
 import Register from "./pages/Register";
 import ResetPassword from "./pages/ResetPassword";
-import RestorePassword from "./pages/RestorePassword";
-import Root from "./pages/Root";
+import ForgotPassword from "./pages/ForgotPassword";
 
 const App = () => {
   /** Defined Routes */
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/" element={<Layout />}>
-        <Route path="/" element={<Root />}>
+      <Route>
+        {/* protected routes */}
+        <Route path="/" element={<ProtectedRoute />}>
           <Route index element={<Home />} />
           <Route path="category" element={<Category />} />
           <Route path="category/add" element={<AddCategory />} />
@@ -32,7 +32,7 @@ const App = () => {
         {/* public routes */}
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
-        <Route path="restore-password" element={<RestorePassword />} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
         <Route
           path="reset-password/:resetPasswordToken"
           element={<ResetPassword />}

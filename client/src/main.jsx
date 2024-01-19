@@ -3,24 +3,24 @@ import ReactDOM from "react-dom/client";
 import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "react-query";
 import App from "./App.jsx";
-import AuthProvider from "./auth/authProvider.jsx";
 import "./index.css";
 import "./inetercepters/axios.js";
 
 // Create a client
-const queryClient = new QueryClient();
+export const client = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <QueryClientProvider client={queryClient}>
+  <QueryClientProvider client={client}>
     <React.StrictMode>
-      <AuthProvider>
-        <App />
-        <Toaster
-          toastOptions={{
-            className: "text-sm",
-          }}
-        />
-      </AuthProvider>
+      <App />
+      <Toaster
+        toastOptions={{
+          className: "text-sm bg-[#5C218B] text-white text-center",
+          style: {
+            width: "auto",
+          },
+        }}
+      />
     </React.StrictMode>
   </QueryClientProvider>
 );

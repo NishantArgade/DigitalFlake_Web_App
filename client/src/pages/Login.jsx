@@ -6,10 +6,9 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../auth/authProvider.jsx";
+// import { login } from "../api";
 
 const Login = () => {
-  const { setToken } = useAuth();
   const navigate = useNavigate();
   const [inputs, setInputs] = useState({
     email: "",
@@ -31,17 +30,15 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const data = await axios.post("/api/login", inputs);
-
-      setToken(data?.data?.accessToken);
+      const { data } = await axios.post("/api/login", inputs);
       setInputs({
         email: "",
         password: "",
       });
-      navigate("/");
-      toast.success("Loggedin Successful");
+      navigate("/", { replace: true });
+      toast.success(data.message);
     } catch (error) {
-      toast.error(error.response.data.error);
+      return toast.error(error.response.data.message);
     }
   };
   return (
@@ -102,7 +99,7 @@ const Login = () => {
               errorMessages={["this field is required"]}
             />
             <Link
-              to="/restore-password"
+              to="/forgot-password"
               className="text-right text-sm text-gray-500"
             >
               Forgot Password?

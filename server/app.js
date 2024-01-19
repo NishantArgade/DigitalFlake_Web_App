@@ -1,8 +1,7 @@
 import cors from "cors";
 import "dotenv/config.js";
 import express from "express";
-
-import cookieParser from "cookie-parser";
+import { default as cookieParser } from "cookie-parser";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
@@ -10,15 +9,20 @@ import userRoutes from "./routes/userRoutes.js";
 
 const app = express();
 
+app.use(cookieParser()); //allow parse cookies from request object
+app.use(express.json()); // for read json data from req body
+
+app.use(
+  cors({
+    origin: ["http://localhost:5173"],
+    credentials: true, // set when working with credentials (cookies,http,authentication)
+  })
+); //for accepting incoming requests from other domains
+
+//register routes
 app.get("/", (req, res) => {
   res.send("Hello There");
 });
-
-app.use(cors()); //for accepting incoming requests from other domains
-app.use(express.json()); // for read json data from req body
-app.use(cookieParser()); // for read json data from req body
-
-//register routes
 app.use("/api", userRoutes); // for read json data from req body
 app.use("/api", categoryRoutes); // for read json data from req body
 app.use("/api", productRoutes); // for read json data from req body

@@ -7,7 +7,7 @@ import { auth } from "../middlewares/auth.js";
 
 const router = Router();
 
-router.route("/create-category").post(createCategory);
-router.route("/all-categories").get(getAllCategories);
+router.route("/create-category").post(auth, createCategory);
+router.route("/all-categories").get(auth, getAllCategories);
 
 export default router;

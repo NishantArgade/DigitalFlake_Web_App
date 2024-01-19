@@ -1,15 +1,15 @@
-import asyncHandler from "express-async-handler";
 import { Category } from "../models/categoryModel.js";
+import { asyncErrorHandler } from "../Utils/common.js";
 
-export const createCategory = asyncHandler(async (req, res) => {
+export const createCategory = asyncErrorHandler(async (req, res, next) => {
   const newCategory = await Category.create(req.body);
   res.status(201).json({
-    msg: `Category created successfully`,
-    newCategory,
+    status: "success",
+    message: `Category created successfully`,
   });
 });
 
-export const getAllCategories = asyncHandler(async (req, res) => {
+export const getAllCategories = asyncErrorHandler(async (req, res, next) => {
   const allCategories = await Category.find();
-  res.status(200).json({ allCategories });
+  res.status(200).json({ status: "success", allCategories });
 });
