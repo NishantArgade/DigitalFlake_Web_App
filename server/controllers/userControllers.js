@@ -59,16 +59,13 @@ export const register = asyncErrorHandler(async (req, res, next) => {
 });
 
 export const logout = asyncErrorHandler(async (req, res, next) => {
-  const accessTokenCookieOptions = cookieOptions(
-    process.env.ACCESS_TOKEN_EXPIRE,
-    false
-  );
-  const refreshTokenCookieOptions = cookieOptions(
-    process.env.REFRESH_TOKEN_EXPIRE,
-    true
-  );
-  res.clearCookie("access_token", accessTokenCookieOptions);
-  res.clearCookie("refresh_token", refreshTokenCookieOptions);
+  const options = {
+    sameSite: "none",
+    secure: true,
+  };
+
+  res.clearCookie("access_token", options);
+  res.clearCookie("refresh_token", options);
 
   res.status(200).json({ status: "success", message: "Logout Successfully" });
 });
