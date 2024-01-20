@@ -61,9 +61,7 @@ const Login = () => {
             </p>
           </div>
           <ValidatorForm
-            // ref="form"
             onSubmit={handleLogin}
-            onError={(errors) => console.log(errors)}
             className="flex flex-col gap-y-6"
           >
             <TextValidator

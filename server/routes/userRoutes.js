@@ -18,6 +18,5 @@ router
 router.route("/register").post(register);
 router.route("/forgot-password").post(forgotPassword);
 router.route("/reset-password/:token").patch(resetPassword);
-// router.route("/refreshToken").post(refreshJWTToken);
 
 export default router;

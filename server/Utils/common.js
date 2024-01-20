@@ -23,3 +23,19 @@ export const generateRefreshToken = function (user) {
   );
   return refreshToken;
 };
+
+export const cookieOptions = function (tokenExpire, httpOnly) {
+  const options = {
+    maxAge: tokenExpire * 60 * 1000,
+    httpOnly: httpOnly,
+  };
+
+  // Check if the environment is production
+  if (process.env.NODE_ENV === "production") {
+    // Enable secure setting only in production
+    options.sameSite = "none";
+    options.secure = true;
+  }
+  return options;
+};
+

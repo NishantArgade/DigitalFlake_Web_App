@@ -44,8 +44,6 @@ export default function EditProductModal({ open, setOpen, product }) {
       image: product?.productImage,
     });
   }, [product]);
-  console.log("🚀 ~ EditProductModal ~ product:", product);
-
   const handleChangedInputs = (e) => {
     const name = e.target.name;
     setInputs((state) => ({ ...state, [name]: e.target.value }));

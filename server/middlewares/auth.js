@@ -13,16 +13,13 @@ export const auth = expressAsyncHandler(async (req, res, next) => {
         access_token,
         process.env.ACCESS_TOKEN_SECRET
       );
-      // console.log("payload", userID);
 
       const user = await User.findById(userID).select("-password");
 
       req.user = user;
-      console.log(access_token);
       next();
     } else {
       const refresh_token = req.cookies.refresh_token;
-      console.log("refresh token", refresh_token);
 
       // generate new access token from refresh token
       const user = jwt.verify(refresh_token, process.env.REFRESH_TOKEN_SECRET);
@@ -39,7 +36,6 @@ export const auth = expressAsyncHandler(async (req, res, next) => {
       next();
     }
   } catch (error) {
-    console.log(error);
     res.clearCookie("access_token");
     return res.status(401).send("Authentication failed!");
   }

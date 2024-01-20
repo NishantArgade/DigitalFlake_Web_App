@@ -21,8 +21,6 @@ export const sendMail = async (options) => {
       text: options.text, // plain text body
       html: options.html, // html body
     });
-
-    console.log("Message sent: %s", info.messageId);
   } catch (error) {
     console.log(error);
   }

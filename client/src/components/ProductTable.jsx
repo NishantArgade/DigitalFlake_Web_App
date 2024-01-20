@@ -19,7 +19,7 @@ const ProductTable = ({ data, columns }) => {
   const [selectedProduct, setSelectedProduct] = React.useState({});
   const [{ pageIndex, pageSize }, setPagination] = React.useState({
     pageIndex: 0,
-    pageSize: 6,
+    pageSize: 5,
   });
 
   const pagination = React.useMemo(
@@ -65,7 +65,7 @@ const ProductTable = ({ data, columns }) => {
         setOpen={setOpenDeleteProductModal}
         productId={selectedProduct?._id}
       />
-      <div className="p-2 min-h-[28rem] overflow-auto">
+      <div className="p-2 min-h-[25rem] overflow-auto">
         <table className=" w-full  p-4 ">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (

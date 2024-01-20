@@ -14,7 +14,7 @@ app.use(express.json()); // for read json data from req body
 
 app.use(
   cors({
-    origin: [process.env.CLIENT_URL],
+    origin: [process.env.CLIENT_URL, "http://localhost:5173"],
     credentials: true, // set when working with credentials (cookies,http,authentication)
   })
 ); //for accepting incoming requests from other domains

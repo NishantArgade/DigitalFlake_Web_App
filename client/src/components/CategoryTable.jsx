@@ -11,7 +11,7 @@ const CategoryTable = ({ data, columns }) => {
   const [sorting, setSorting] = React.useState([]);
   const [{ pageIndex, pageSize }, setPagination] = React.useState({
     pageIndex: 0,
-    pageSize: 7,
+    pageSize: 5,
   });
 
   const pagination = React.useMemo(
@@ -39,7 +39,7 @@ const CategoryTable = ({ data, columns }) => {
   // table.setPageSize(5);
   return (
     <>
-      <div className="p-2 min-h-[29rem] overflow-auto">
+      <div className="p-2 min-h-[25rem] mt-14 overflow-auto">
         <table className=" w-full  p-4 ">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (

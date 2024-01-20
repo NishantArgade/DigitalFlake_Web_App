@@ -51,7 +51,6 @@ export const errorHandler = (error, req, res, next) => {
     if (error.code === 11000) {
       error = duplicateKeyErrorHandler(error);
     }
-    // console.log(error);
 
     prodErrors(res, error);
   }

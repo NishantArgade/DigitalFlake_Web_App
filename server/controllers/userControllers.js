@@ -1,9 +1,9 @@
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-import jwt from "jsonwebtoken";
 import { CustomError } from "../Utils/CustomError.js";
 import {
   asyncErrorHandler,
+  cookieOptions,
   generateAccessToken,
   generateRefreshToken,
 } from "../Utils/common.js";
@@ -22,35 +22,18 @@ export const login = asyncErrorHandler(async (req, res, next) => {
 
   // generate and save access token
   const accessToken = generateAccessToken(user);
-  
-  const accessTokenCookieOptions = {
-    maxAge: process.env.ACCESS_TOKEN_EXPIRE * 60 * 1000,
-    httpOnly: false,
-    sameSite: "none",
-  };
-
-  // Check if the environment is production
-  if (process.env.NODE_ENV === "production") {
-    // Enable secure setting only in production
-    accessTokenCookieOptions.secure = true;
-  }
+  const accessTokenCookieOptions = cookieOptions(
+    process.env.ACCESS_TOKEN_EXPIRE,
+    false
+  );
   res.cookie("access_token", accessToken, accessTokenCookieOptions);
 
   // generate and save refresh token
   const refreshToken = generateRefreshToken(user);
-
-  const refreshTokenCookieOptions = {
-    maxAge: process.env.REFRESH_TOKEN_EXPIRE * 60 * 1000,
-    httpOnly: true,
-    sameSite: "none",
-  };
-
-  // Check if the environment is production
-  if (process.env.NODE_ENV === "production") {
-    // Enable secure setting only in production
-    refreshTokenCookieOptions.secure = true;
-  }
-
+  const refreshTokenCookieOptions = cookieOptions(
+    process.env.REFRESH_TOKEN_EXPIRE,
+    true
+  );
   res.cookie("refresh_token", refreshToken, refreshTokenCookieOptions);
 
   res.status(200).json({
@@ -74,20 +57,6 @@ export const register = asyncErrorHandler(async (req, res, next) => {
     message: "Registration successful. Welcome aboard!",
   });
 });
-
-// export const refreshJWTToken = asyncErrorHandler(async (req, res, next) => {
-//   const refreshToken = req.body.refreshToken;
-//   const decode = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-//   // generate access token and refresh token
-//   const accessToken = jwt.sign(decode, process.env.ACCESS_TOKEN_SECRET, {
-//     expiresIn: "5d",
-//   });
-
-//   // Set the access token in the response header
-//   res.header("Authorization", `Bearer ${accessToken}`);
-
-//   res.status(200).json({ accessToken });
-// });
 
 export const logout = asyncErrorHandler(async (req, res, next) => {
   res.clearCookie("access_token");

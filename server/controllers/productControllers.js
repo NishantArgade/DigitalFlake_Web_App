@@ -59,8 +59,6 @@ const uploadToCloudinary = async (
     });
 
     const imageUrl = result.secure_url;
-    console.log("🚀 ~ uploadToCloudinary ~ imageUrl:", imageUrl);
-
     const productData = {
       productName: productName,
       productPackSize: Number(packSize),
@@ -69,10 +67,7 @@ const uploadToCloudinary = async (
       productStatus: status,
       productImage: imageUrl,
     };
-    console.log("🚀 ~ uploadToCloudinary ~ productData:", productData);
-
     const updatedProduct = await Product.findByIdAndUpdate(id, productData);
-    console.log("🚀 ~ uploadToCloudinary ~ updatedProduct:", updatedProduct);
   } catch (error) {
     // Handle errors here
     console.error("Error in uploadToCloudinary:", error);
@@ -82,7 +77,6 @@ const uploadToCloudinary = async (
 export const updateProduct = asyncErrorHandler(async (req, res, next) => {
   const { id, category, productName, packSize, mrp, status } = req.body;
 
-  console.log("--> ", req.body);
   // Upload the file to Cloudinary
 
   await uploadToCloudinary(

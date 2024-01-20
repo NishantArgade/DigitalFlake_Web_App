@@ -10,15 +10,12 @@ import Navbar from "../components/Navbar";
 const ProtectedRoute = () => {
   const access_token = Cookies.get("access_token");
   const path = useLocation();
-  console.log(path)
   const temp = async () => {
     if (!access_token) {
-      const isAuth = await axios.post("/api/getAccessToken");
-      console.log(isAuth);
+      await axios.post("/api/getAccessToken");
     }
   };
   useEffect(() => {
-    // console.log("protected route called");
     temp();
   }, [path]);
 
