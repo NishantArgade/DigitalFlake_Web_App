@@ -39,6 +39,8 @@ export const login = asyncErrorHandler(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     message: "Logged in successfully. Welcome back!",
+    jwt: accessToken,
+    refreshToken: refreshToken,
   });
 });
 
