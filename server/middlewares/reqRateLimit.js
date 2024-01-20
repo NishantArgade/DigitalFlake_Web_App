@@ -13,5 +13,8 @@ export const reqRateLimiter = (duration, limit) => {
         )
       );
     },
+    validate: {
+      xForwardedForHeader: false,
+    },
   });
 };

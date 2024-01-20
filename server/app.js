@@ -12,7 +12,6 @@ import productRoutes from "./routes/productRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 const app = express();
 
-app.set("trust proxy", true);
 app.use(reqRateLimiter(60, 1000));
 app.use(helmet()); //provide security to our express app by setting various HTTP response headers
 app.use(cookieParser()); //allow parse cookies from request object
