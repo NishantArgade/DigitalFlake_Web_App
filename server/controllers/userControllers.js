@@ -22,19 +22,36 @@ export const login = asyncErrorHandler(async (req, res, next) => {
 
   // generate and save access token
   const accessToken = generateAccessToken(user);
-  res.cookie("access_token", accessToken, {
+  
+  const accessTokenCookieOptions = {
     maxAge: process.env.ACCESS_TOKEN_EXPIRE * 60 * 1000,
     httpOnly: false,
-    secure: true,
-  });
+    sameSite: "none",
+  };
+
+  // Check if the environment is production
+  if (process.env.NODE_ENV === "production") {
+    // Enable secure setting only in production
+    accessTokenCookieOptions.secure = true;
+  }
+  res.cookie("access_token", accessToken, accessTokenCookieOptions);
 
   // generate and save refresh token
   const refreshToken = generateRefreshToken(user);
-  res.cookie("refresh_token", refreshToken, {
+
+  const refreshTokenCookieOptions = {
     maxAge: process.env.REFRESH_TOKEN_EXPIRE * 60 * 1000,
     httpOnly: true,
-    secure: true,
-  });
+    sameSite: "none",
+  };
+
+  // Check if the environment is production
+  if (process.env.NODE_ENV === "production") {
+    // Enable secure setting only in production
+    refreshTokenCookieOptions.secure = true;
+  }
+
+  res.cookie("refresh_token", refreshToken, refreshTokenCookieOptions);
 
   res.status(200).json({
     status: "success",
