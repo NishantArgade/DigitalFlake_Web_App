@@ -65,7 +65,7 @@ const ProductTable = ({ data, columns }) => {
         setOpen={setOpenDeleteProductModal}
         productId={selectedProduct?._id}
       />
-      <div className="p-2 min-h-[25rem] overflow-auto">
+      <div className="p-2 min-h-[24rem] overflow-auto">
         <table className=" w-full  p-4 ">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
