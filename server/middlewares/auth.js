@@ -1,6 +1,6 @@
 import expressAsyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
-import { generateAccessToken } from "../Utils/common.js";
+import { cookieOptions, generateAccessToken } from "../Utils/common.js";
 import { User } from "../models/userModel.js";
 
 export const auth = expressAsyncHandler(async (req, res, next) => {
@@ -24,13 +24,13 @@ export const auth = expressAsyncHandler(async (req, res, next) => {
       // generate new access token from refresh token
       const user = jwt.verify(refresh_token, process.env.REFRESH_TOKEN_SECRET);
 
-      // generate access token from refresh token
+      // generate and save access token
       const accessToken = generateAccessToken(user);
-
-      res.cookie("access_token", accessToken, {
-        maxAge: process.env.ACCESS_TOKEN_EXPIRE * 60 * 1000,
-        httpOnly: false,
-      });
+      const accessTokenCookieOptions = cookieOptions(
+        process.env.ACCESS_TOKEN_EXPIRE,
+        false
+      );
+      res.cookie("access_token", accessToken, accessTokenCookieOptions);
 
       // allow user to go ahead
       next();
