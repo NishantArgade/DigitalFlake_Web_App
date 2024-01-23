@@ -7,6 +7,8 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { client } from "../main";
+import { persistor } from "../redux/store";
 const style = {
   position: "absolute",
   top: "50%",
@@ -27,6 +29,11 @@ export default function LogoutModal({ open, setOpen }) {
     try {
       await axios.post("/api/logout");
       toast.success("Logged out successfully");
+      // persistor.pause();
+      persistor.flush().then(() => {
+        return persistor.purge();
+      });
+      client.invalidateQueries("tokenValidation");
       navigate("/login", { replace: true });
     } catch (error) {
       console.log(error);

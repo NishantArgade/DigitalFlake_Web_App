@@ -29,11 +29,13 @@ const AddCategory = () => {
     e.preventDefault();
     try {
       const data = axios.post("/api/create-category", inputs);
+
       toast.promise(data, {
         loading: "Loading...",
         success: "Category Added",
-        error: "Something went wrong!",
+        error: (err) => err.response.data.message.toString(),
       });
+
       setInputs({
         categoryName: "",
         categoryDescription: "",
@@ -41,7 +43,7 @@ const AddCategory = () => {
       });
       client.invalidateQueries("allCategories");
     } catch (error) {
-      toast.error(error.response.data.error);
+      toast.error(error.response.data.message);
     }
   };
   return (

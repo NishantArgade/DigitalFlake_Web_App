@@ -24,18 +24,19 @@ export const generateRefreshToken = function (user) {
   return refreshToken;
 };
 
-export const cookieOptions = function (tokenExpire, httpOnly) {
+export const cookieOptions = function (tokenExpire) {
   const options = {
     maxAge: tokenExpire * 60 * 1000,
-    httpOnly: httpOnly,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    // sameSite: "Strict",
   };
 
   // Check if the environment is production
-  if (process.env.NODE_ENV === "production") {
-    // Enable secure setting only in production
-    options.sameSite = "none";
-    options.secure = true;
-  }
+  // if (process.env.NODE_ENV === "production") {
+  //   // Enable secure setting only in production
+  //   options.sameSite = "none";
+  //   options.secure = true;
+  // }
   return options;
 };
-

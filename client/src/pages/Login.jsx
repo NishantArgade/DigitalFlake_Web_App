@@ -5,10 +5,15 @@ import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
-import { Link, useNavigate } from "react-router-dom";
-// import { login } from "../api";
+import { useDispatch } from "react-redux";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+import { client } from "../main";
+import { login } from "../redux/slices/userSlice";
 
 const Login = () => {
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
   const [inputs, setInputs] = useState({
     email: "",
@@ -30,17 +35,31 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const { data } = await axios.post("/api/login", inputs);
-      setInputs({
-        email: "",
-        password: "",
+      const response = axios.post("/api/login", inputs);
+
+      toast.promise(response, {
+        loading: "Logging...",
+        success: (res) => {
+          dispatch(login(res.data?.user));
+
+          setInputs({
+            email: "",
+            password: "",
+          });
+
+          client.invalidateQueries("tokenValidation");
+          navigate("/", { replace: true });
+          return res.data.message;
+        },
+        error: (err) => err.response.data.message.toString(),
       });
-      navigate("/", { replace: true });
-      toast.success(data.message);
     } catch (error) {
-      return toast.error(error.response.data.message);
+      return toast.error(error.response?.data?.message);
     }
   };
+  // const { isLoggedIn } = useAuth();
+  // if (isLoggedIn) return <Navigate to={"/"} />;
+
   return (
     <div className="container mx-auto w-full md:h-screen h-fit flex justify-center  items-center">
       <div className="md:w-[80%] w-[90%]  md:h-[90%] my-8  shadow-[rgba(0,_0,_0,_0.30)_0px_3px_8px] md:shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-lg object-center relative">

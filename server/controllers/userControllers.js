@@ -23,16 +23,14 @@ export const login = asyncErrorHandler(async (req, res, next) => {
   // generate and save access token
   const accessToken = generateAccessToken(user);
   const accessTokenCookieOptions = cookieOptions(
-    process.env.ACCESS_TOKEN_EXPIRE,
-    false
+    process.env.ACCESS_TOKEN_EXPIRE
   );
   res.cookie("access_token", accessToken, accessTokenCookieOptions);
 
   // generate and save refresh token
   const refreshToken = generateRefreshToken(user);
   const refreshTokenCookieOptions = cookieOptions(
-    process.env.REFRESH_TOKEN_EXPIRE,
-    true
+    process.env.REFRESH_TOKEN_EXPIRE
   );
   res.cookie("refresh_token", refreshToken, refreshTokenCookieOptions);
 
@@ -41,6 +39,7 @@ export const login = asyncErrorHandler(async (req, res, next) => {
     message: "Logged in successfully. Welcome back!",
     jwt: accessToken,
     refreshToken: refreshToken,
+    user,
   });
 });
 
@@ -57,17 +56,13 @@ export const register = asyncErrorHandler(async (req, res, next) => {
   res.status(201).json({
     status: "success",
     message: "Registration successful. Welcome aboard!",
+    newUser,
   });
 });
 
 export const logout = asyncErrorHandler(async (req, res, next) => {
-  const options = {
-    sameSite: "none",
-    secure: true,
-  };
-
-  res.clearCookie("access_token", options);
-  res.clearCookie("refresh_token", options);
+  res.cookie("access_token", "", cookieOptions(0));
+  res.cookie("refresh_token", "", cookieOptions(0));
 
   res.status(200).json({ status: "success", message: "Logout Successfully" });
 });
@@ -146,5 +141,7 @@ export const resetPassword = asyncErrorHandler(async (req, res, next) => {
   user.resetPasswordTokenExpires = undefined;
   await user.save();
 
-  return next(new CustomError("Password updated successfully", 200));
+  res
+    .status(200)
+    .json({ status: "success", message: "Password updated successfully" });
 });

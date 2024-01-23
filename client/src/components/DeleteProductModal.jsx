@@ -29,7 +29,7 @@ export default function DeleteProductModal({ open, setOpen, productId }) {
       handleClose();
       toast.success("Product deleted successfully");
     } catch (error) {
-      toast.error(error.response.data.error);
+      toast.error(error.response.data.message);
     }
   };
   return (

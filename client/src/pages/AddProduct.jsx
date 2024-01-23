@@ -41,7 +41,7 @@ const AddProduct = () => {
       toast.promise(data, {
         loading: "Loading...",
         success: "Product Added",
-        error: "Something went wrong!",
+        error: (err) => err.response.data.message.toString(),
       });
 
       return data;
@@ -67,8 +67,10 @@ const AddProduct = () => {
       const response = await axios.get("/api/all-categories");
       return response?.data?.allCategories || []; // Make sure to return the data from the axios call
     },
+    refetchOnWindowFocus: false,
   });
 
+  // let cat = [];
   const handleAddProduct = (e) => {
     e.preventDefault();
 

@@ -14,6 +14,11 @@ const userSchema = new mongoose.Schema({
     type: "String",
     required: [true, "password is required"],
   },
+  role: {
+    type: "String",
+    enum: ["user", "admin", "operator"],
+    default: "user",
+  },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
   resetPasswordToken: {

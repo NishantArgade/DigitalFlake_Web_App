@@ -7,7 +7,8 @@ import {
   removeProduct,
   updateProduct,
 } from "../controllers/productControllers.js";
-import { auth } from "../middlewares/auth.js";
+
+import auth from "../middlewares/auth.js";
 
 const router = Router();
 
@@ -23,11 +24,23 @@ const upload = multer({ storage: storage });
 
 router
   .route("/create-product")
-  .post(auth, upload.single("file"), createProduct);
+  .post(
+    auth.protect,
+    auth.restrict("admin", "operator"),
+    upload.single("file"),
+    createProduct
+  );
 router
   .route("/update-product")
-  .post(auth, upload.single("file"), updateProduct);
-router.route("/remove-product/:productId").delete(auth, removeProduct);
-router.route("/all-products").get(auth, getAllProducts);
+  .post(
+    auth.protect,
+    auth.restrict("admin", "operator"),
+    upload.single("file"),
+    updateProduct
+  );
+router
+  .route("/remove-product/:productId")
+  .delete(auth.protect, auth.restrict("admin", "operator"), removeProduct);
+router.route("/all-products").get(auth.protect, getAllProducts);
 
 export default router;

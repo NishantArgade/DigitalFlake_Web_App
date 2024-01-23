@@ -69,7 +69,7 @@ export default function EditProductModal({ open, setOpen, product }) {
       toast.promise(data, {
         loading: "Loading...",
         success: "Product Updated",
-        error: "Something went wrong!",
+        error: (err) => err.response.data.message.toString(),
       });
 
       return data;
