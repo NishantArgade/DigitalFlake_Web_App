@@ -29,7 +29,7 @@ export const cookieOptions = function (tokenExpire) {
     maxAge: tokenExpire * 60 * 1000,
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "Strict",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "Strict",
   };
 
   // Check if the environment is production
